@@ -1,0 +1,8 @@
+.silent-disabled {
+    display: none;
+  }
+  .silentmessages-button .disabled-stroke-through {
+    position: absolute;
+    transform: translateX(-15px) translateY(530px) rotate(-45deg);
+  }
+  

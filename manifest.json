@@ -1,20 +1,21 @@
 {
-  "id": "dev.replugged.PluginTemplate",
-  "name": "Plugin Template",
-  "description": "A plugin template",
+  "id": "dev.Teltta.SilentMessages",
+  "name": "Silent Messages",
+  "description": "Makes messages sent by you @silent",
   "author": {
-    "name": "replugged",
-    "discordID": "1000992611840049192",
-    "github": "replugged-org"
+    "name": "teltta",
+    "discordID": "365145249074642956",
+    "github": "Teltta"
   },
   "version": "1.0.0",
   "updater": {
     "type": "github",
-    "id": "replugged-org/plugin-template"
+    "id": "Teltta/SilentMessages"
   },
   "license": "MIT",
   "type": "replugged-plugin",
   "renderer": "src/index.ts",
-  "source": "https://github.com/replugged-org/plugin-template",
-  "image": ["https://i.imgur.com/14CNs3a.png?CHANGE-THIS-URL"]
+  "plaintextPatches": "src/plaintextPatches.ts",
+  "source": "https://github.com/Teltta/SilentMessages",
+  "image": ["https://i.imgur.com/14CNs3a.png"]
 }
