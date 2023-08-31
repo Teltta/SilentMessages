@@ -18,14 +18,14 @@ export function start(): void {
   injectMessageContent();
 
   // @ts-expect-error limol
-  window.silenttyping = {
+  window.silentmessages = {
     Icon,
   };
 }
 
 function injectMessageContent(): void {
   injector.before(common.messages, "sendMessage", (args) => {
-    if (args[1].content.startsWith("@silent") || !cfg.get("silent", false)) return args;
+    if (args[1].content.startsWith("@silent ") || !cfg.get("silent", false)) return args;
     args[1].content = `@silent ${args[1].content}`;
     return args;
   });
@@ -34,5 +34,5 @@ function injectMessageContent(): void {
 export function stop(): void {
   injector.uninjectAll();
   // @ts-expect-error limol
-  delete window.silenttyping;
+  delete window.silentmessages;
 }
