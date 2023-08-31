@@ -5,14 +5,18 @@ import { cfg } from ".";
 export const Icon = (): React.JSX.Element => {
   const silent = cfg.get("silent", true);
   const buttonEnabled = cfg.get("buttonEnabled", true);
-  
+
   return (
-    <div key={`${silent}`} className={`${buttonEnabled ? "silentmessages-button-enabled" : "silentmessages-button-disabled"}`}>
+    <div
+      key={`${silent}`}
+      className={`${
+        buttonEnabled ? "silentmessages-button-enabled" : "silentmessages-button-disabled"
+      }`}>
       <components.Tooltip text={!silent ? "Disable Silent Messages" : "Enable Silent Messages"}>
         <components.Clickable
           style={{ marginTop: 5 }}
           onClick={() => {
-            cfg.set("silent", !cfg.get("silent"))
+            cfg.set("silent", !cfg.get("silent"));
           }}>
           <button className="silentmessages-button">
             <svg width="25" height="25" viewBox="0 0 576 512">

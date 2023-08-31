@@ -15,7 +15,7 @@ export interface SettingsType {
 export const cfg = await settings.init<SettingsType>("dev.Teltta.SilentMessages");
 
 export function start(): void {
-  injectMessageContent()
+  injectMessageContent();
 
   // @ts-expect-error limol
   window.silenttyping = {
@@ -30,7 +30,6 @@ function injectMessageContent(): void {
     return args;
   });
 }
-
 
 export function stop(): void {
   injector.uninjectAll();
