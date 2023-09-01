@@ -2,14 +2,19 @@ import { components } from "replugged";
 
 import { cfg } from ".";
 
-export const Icon = (): React.JSX.Element => {
+export const Icon = (f: React.JSX.Element[]): React.JSX.Element | null => {
+  f.forEach((element) => {
+    if (element.key == "silent") {
+      return null;
+    }
+  });
   const silent = cfg.get("silent", true);
   const buttonEnabled = cfg.get("buttonEnabled", true);
 
   return (
     <div
-      key={`${silent}`}
-      className={`${
+      key="silent"
+      className={`silentmessages-button-main ${
         buttonEnabled ? "silentmessages-button-enabled" : "silentmessages-button-disabled"
       }`}>
       <components.Tooltip text="Toggle Silent Messages">
@@ -24,11 +29,7 @@ export const Icon = (): React.JSX.Element => {
             <svg width="25" height="25" viewBox="0 0 25 25">
               <path
                 fill="currentColor"
-                d="M18 10.7101C15.1085 9.84957 13 7.17102 13 4C13 3.69264 13.0198 3.3899 13.0582 3.093C12.7147 3.03189 12.3611 3 12 3C8.686 3 6 5.686 6 9V14C6 15.657 4.656 17 3 17V18H21V17C19.344 17 18 15.657 18 14V10.7101ZM8.55493 19C9.24793 20.19 10.5239 21 11.9999 21C13.4759 21 14.7519 20.19 15.4449 19H8.55493Z"
-              />
-              <path
-                fill="currentColor"
-                d="M18.2624 5.50209L21 2.5V1H16.0349V2.49791H18.476L16 5.61088V7H21V5.50209H18.2624Z"
+                d="M 17.909189,8.9820245 C 17.902694,5.7106061 15.33822,2.9936935 12,3 8.6860058,3.0062608 6,5.686 6,9 v 5 c 0,1.657 -1.344,3 -3,3 v 1 h 18 v -1 c -1.656,0 -2.970018,-1.343271 -3,-3 z M 8.55493,19 c 0.693,1.19 1.96897,2 3.44497,2 1.476,0 2.752,-0.81 3.445,-2 z"
               />
               <rect
                 key={`${silent}`}

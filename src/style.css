@@ -1,7 +1,7 @@
 .silentmessages-button svg {
   margin-top: 5px;
   color: var(--interactive-normal);
-  overflow: visible
+  overflow: visible;
 }
 
 .silentmessages-button:hover svg {
