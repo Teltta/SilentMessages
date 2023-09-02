@@ -1,6 +1,6 @@
 import { components } from "replugged";
 
-import { cfg } from ".";
+import { cfg, toggleDisabledIndicator } from ".";
 
 export const Icon = (f: React.JSX.Element[]): React.JSX.Element | null => {
   f.forEach((element) => {
@@ -21,9 +21,8 @@ export const Icon = (f: React.JSX.Element[]): React.JSX.Element | null => {
         <components.Clickable
           style={{ marginTop: 5 }}
           onClick={() => {
+            toggleDisabledIndicator(cfg.get("silent"));
             cfg.set("silent", !cfg.get("silent"));
-            const disabledIndicator = document.getElementsByClassName("disabled-indicator")[0];
-            disabledIndicator.classList.toggle("silent-disabled");
           }}>
           <button className="silentmessages-button">
             <svg width="25" height="25" viewBox="0 0 25 25">
@@ -33,7 +32,7 @@ export const Icon = (f: React.JSX.Element[]): React.JSX.Element | null => {
               />
               <rect
                 key={`${silent}`}
-                className={`disabled-indicator${!silent ? " silent-disabled" : " silent-enabled"}`}
+                className={`disabled-indicator${!silent ? " silent-disabled" : ""}`}
                 x="10"
                 y="10"
                 width="32px"

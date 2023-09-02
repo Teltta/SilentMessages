@@ -9,11 +9,13 @@ export function Settings(): React.ReactElement {
       <SwitchItem {...util.useSetting(cfg, "buttonEnabled", true)}>
         Show Button on Chatbar
       </SwitchItem>
-      <SwitchItem
-        {...util.useSetting(cfg, "silent", true)}
-        disabled={true}
-        note="Currently the only way to enable is throught the chatbar button.">
+      <SwitchItem {...util.useSetting(cfg, "silent", true)}>
         Enabled
+      </SwitchItem>
+      <SwitchItem
+        {...util.useSetting(cfg, "autoToggle", false)}
+        note="Automatically disable after sending a message">
+        Auto Disable
       </SwitchItem>
     </>
   );
