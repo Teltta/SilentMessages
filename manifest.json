@@ -17,5 +17,7 @@
   "renderer": "src/index.ts",
   "plaintextPatches": "src/plaintextPatches.ts",
   "source": "https://github.com/Teltta/SilentMessages",
-  "image": ["https://i.imgur.com/URuqXxN.gif"]
+  "image": [
+    "https://i.imgur.com/URuqXxN.gif"
+  ]
 }
