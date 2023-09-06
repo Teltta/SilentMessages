@@ -25,10 +25,10 @@ export const Icon = (f: React.JSX.Element[]): React.JSX.Element | null => {
             cfg.set("silent", !cfg.get("silent"));
           }}>
           <button className="silentmessages-button">
-            <svg width="25" height="25" viewBox="0 0 25 25">
+            <svg width="24" height="24" viewBox="0 0 24 24">
               <path
                 fill="currentColor"
-                d="M 17.909189,8.9820245 C 17.902694,5.7106061 15.33822,2.9936935 12,3 8.6860058,3.0062608 6,5.686 6,9 v 5 c 0,1.657 -1.344,3 -3,3 v 1 h 18 v -1 c -1.656,0 -2.970018,-1.343271 -3,-3 z M 8.55493,19 c 0.693,1.19 1.96897,2 3.44497,2 1.476,0 2.752,-0.81 3.445,-2 z"
+                d="M18 9V14C18 15.657 19.344 17 21 17V18H3V17C4.656 17 6 15.657 6 14V9C6 5.686 8.686 3 12 3C15.314 3 18 5.686 18 9ZM11.9999 21C10.5239 21 9.24793 20.19 8.55493 19H15.4449C14.7519 20.19 13.4759 21 11.9999 21Z"
               />
               <rect
                 key={`${silent}`}

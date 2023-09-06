@@ -25,6 +25,15 @@ export function Settings(): React.ReactElement {
         note="Automatically disable after sending a message">
         Auto Disable
       </SwitchItem>
+      <SwitchItem
+        {...util.useSetting(cfg, "ignorePings", false)}
+        note="Ignores silent messages if you send a ping">
+        Ignore Pings
+      </SwitchItem>
+      <div style={{ textAlign: "center", color: "white" }}>
+        <div>Silent Messages v1.0.0</div>
+        <div>by teltta</div>
+      </div>
     </>
   );
 }
