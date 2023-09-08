@@ -30,10 +30,11 @@ export function Settings(): React.ReactElement {
         note="Ignores silent messages if you send a ping">
         Ignore Pings
       </SwitchItem>
-      <div style={{ textAlign: "center", color: "white" }}>
-        <div>Silent Messages v1.0.0</div>
-        <div>by teltta</div>
-      </div>
+      <SwitchItem
+        {...util.useSetting(cfg, "ignoreReplyPings", false)}
+        note="Ignores silent messages if you reply with ping turned on">
+        Ignore Reply Pings
+      </SwitchItem>
     </>
   );
 }
