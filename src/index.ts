@@ -11,8 +11,10 @@ export interface SettingsType {
   buttonEnabled?: boolean;
   silent?: boolean;
   autoToggle?: boolean;
+  autoToggleOnlyOnPing?: boolean;
   ignorePings?: boolean;
   ignoreReplyPings?: boolean;
+  onlyOnPings?: boolean;
 }
 
 export const cfg = await settings.init<SettingsType>("dev.Teltta.SilentMessages");
@@ -23,7 +25,6 @@ export function start(): void {
 
 export function toggleDisabledIndicator(visible: boolean): void {
   const disabledIndicator = document.getElementsByClassName("disabled-indicator")[0];
-  console.log(`${visible} ${disabledIndicator.classList}`);
   if (disabledIndicator.classList.contains("silent-disabled") && !visible) {
     disabledIndicator.classList.remove("silent-disabled");
   } else if (!disabledIndicator.classList.contains("silent-disabled") && visible) {
@@ -31,11 +32,35 @@ export function toggleDisabledIndicator(visible: boolean): void {
   }
 }
 
+function autoDisable(): void {
+  if (cfg.get("autoToggle", false)) {
+    cfg.set("silent", false);
+    toggleDisabledIndicator(false);
+  }
+}
+
 function injectMessageContent(): void {
   injector.before(common.messages, "sendMessage", (args) => {
+    const silent = cfg.get("silent", false);
+    if (!cfg.get("autoToggleOnlyOnPing", true)) {
+      autoDisable();
+    }
+    if (cfg.get("onlyOnPings")) {
+      if (
+        silent &&
+        ((args[3]?.messageReference instanceof Object &&
+          args[3]?.allowedMentions?.replied_user !== false) ||
+          args[1].content.search(userPingRegex) !== -1)
+      ) {
+        autoDisable();
+        args[1].content = `@silent ${args[1].content}`;
+      }
+      return args;
+    }
+
     if (
       args[1].content.startsWith("@silent ") ||
-      !cfg.get("silent", false) ||
+      !silent ||
       (cfg.get("ignorePings", false) && args[1].content.search(userPingRegex) !== -1) ||
       (cfg.get("ignoreReplyPings", false) &&
         args[3]?.messageReference instanceof Object &&
@@ -43,11 +68,10 @@ function injectMessageContent(): void {
     ) {
       return args;
     }
+
+    autoDisable();
+
     args[1].content = `@silent ${args[1].content}`;
-    if (cfg.get("autoToggle", false)) {
-      cfg.set("silent", false);
-      toggleDisabledIndicator(false);
-    }
     return args;
   });
 }
