@@ -1,5 +1,6 @@
-import { Injector, common, settings } from "replugged";
+import { Injector, common, settings, webpack } from "replugged";
 import "./style.css";
+import { UploadArguments } from "./types";
 
 const injector = new Injector();
 const userPingRegex = /<@([0-9]{18,19})>/;
@@ -27,8 +28,9 @@ export const cfg = await settings.init<SettingsType>("dev.Teltta.SilentMessages"
   onlyOnPings: true,
 });
 
-export function start(): void {
+export async function start(): Promise<void> {
   injectMessageContent();
+  await injectSendAttachments();
 }
 
 export function toggleDisabledIndicator(visible: boolean): void {
@@ -49,6 +51,7 @@ function autoDisable(): void {
 
 function injectMessageContent(): void {
   injector.before(common.messages, "sendMessage", (args) => {
+    console.log("sendMessage", args)
     const silent = cfg.get("silent", false);
     if (!cfg.get("autoToggleOnlyOnPing", true)) {
       autoDisable();
@@ -80,6 +83,51 @@ function injectMessageContent(): void {
     autoDisable();
 
     args[1].content = `@silent ${args[1].content}`;
+    return args;
+  });
+}
+
+async function injectSendAttachments(): Promise<void> {
+  const attachmentStore = await webpack.waitForModule<{
+    uploadFiles: (
+      args: UploadArguments,
+    ) => void;
+  }>(webpack.filters.byProps("uploadFiles"));
+
+  injector.before(attachmentStore, "uploadFiles", (args) => {
+    console.log("sendAttachment", args, typeof args, args instanceof Array);
+    console.log(args[0].parsedMessage.content, args[0].parsedMessage.content.search(userPingRegex))
+    const silent = cfg.get("silent", false);
+    if (!cfg.get("autoToggleOnlyOnPing", true)) {
+      autoDisable();
+    }
+    if (cfg.get("onlyOnPings")) {
+      if (
+        silent &&
+        ((args[0].options?.messageReference instanceof Object &&
+          args[0].options?.allowedMentions?.replied_user !== false) ||
+          args[0].parsedMessage.content.search(userPingRegex) !== -1)
+      ) {
+        autoDisable();
+        args[0].parsedMessage.content = `@silent ${args[0].parsedMessage.content}`;
+      }
+      return args;
+    }
+    
+    if (
+      args[0].parsedMessage.content.startsWith("@silent ") ||
+      !silent ||
+      (cfg.get("ignorePings", false) && args[0].parsedMessage.content.search(userPingRegex) !== -1) ||
+      (cfg.get("ignoreReplyPings", false) &&
+        args[0].options?.messageReference instanceof Object &&
+        args[0].options?.allowedMentions?.replied_user !== false)
+    ) {
+      return args;
+    }
+    
+    autoDisable();
+    
+    args[0].parsedMessage.content = `@silent ${args[0].parsedMessage.content}`;
     return args;
   });
 }

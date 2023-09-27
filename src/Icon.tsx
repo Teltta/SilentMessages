@@ -33,7 +33,7 @@ export const Icon = (f: React.JSX.Element[]): React.JSX.Element | null => {
                 y="10"
                 width="32px"
                 height="3px"
-                fill="#f04747"
+                fill="var(--status-danger)"
               />
             </svg>
           </button>
