@@ -51,7 +51,6 @@ function autoDisable(): void {
 
 function injectMessageContent(): void {
   injector.before(common.messages, "sendMessage", (args) => {
-    console.log("sendMessage", args)
     const silent = cfg.get("silent", false);
     if (!cfg.get("autoToggleOnlyOnPing", true)) {
       autoDisable();
@@ -89,14 +88,10 @@ function injectMessageContent(): void {
 
 async function injectSendAttachments(): Promise<void> {
   const attachmentStore = await webpack.waitForModule<{
-    uploadFiles: (
-      args: UploadArguments,
-    ) => void;
+    uploadFiles: (args: UploadArguments) => void;
   }>(webpack.filters.byProps("uploadFiles"));
 
   injector.before(attachmentStore, "uploadFiles", (args) => {
-    console.log("sendAttachment", args, typeof args, args instanceof Array);
-    console.log(args[0].parsedMessage.content, args[0].parsedMessage.content.search(userPingRegex))
     const silent = cfg.get("silent", false);
     if (!cfg.get("autoToggleOnlyOnPing", true)) {
       autoDisable();
@@ -113,20 +108,21 @@ async function injectSendAttachments(): Promise<void> {
       }
       return args;
     }
-    
+
     if (
       args[0].parsedMessage.content.startsWith("@silent ") ||
       !silent ||
-      (cfg.get("ignorePings", false) && args[0].parsedMessage.content.search(userPingRegex) !== -1) ||
+      (cfg.get("ignorePings", false) &&
+        args[0].parsedMessage.content.search(userPingRegex) !== -1) ||
       (cfg.get("ignoreReplyPings", false) &&
         args[0].options?.messageReference instanceof Object &&
         args[0].options?.allowedMentions?.replied_user !== false)
     ) {
       return args;
     }
-    
+
     autoDisable();
-    
+
     args[0].parsedMessage.content = `@silent ${args[0].parsedMessage.content}`;
     return args;
   });
