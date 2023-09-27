@@ -17,7 +17,15 @@ export interface SettingsType {
   onlyOnPings?: boolean;
 }
 
-export const cfg = await settings.init<SettingsType>("dev.Teltta.SilentMessages");
+export const cfg = await settings.init<SettingsType>("dev.Teltta.SilentMessages", {
+  buttonEnabled: true,
+  silent: true,
+  autoToggle: false,
+  autoToggleOnlyOnPing: true,
+  ignorePings: false,
+  ignoreReplyPings: false,
+  onlyOnPings: true,
+});
 
 export function start(): void {
   injectMessageContent();

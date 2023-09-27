@@ -5,7 +5,7 @@ const { React } = common;
 const { SwitchItem, Category } = components;
 
 export function Settings(): React.ReactElement {
-  let [silent, setSilent] = React.useState(cfg.get("silent", false));
+  let [silent, setSilent] = React.useState(cfg.get("silent", true));
   return (
     <>
       <SwitchItem {...util.useSetting(cfg, "buttonEnabled", true)}>
@@ -46,7 +46,7 @@ export function Settings(): React.ReactElement {
           Ignore Reply Pings
         </SwitchItem>
         <SwitchItem
-          {...util.useSetting(cfg, "onlyOnPings", false)}
+          {...util.useSetting(cfg, "onlyOnPings", true)}
           note="Only make pings silent.
           NOTE: This overrides all other options">
           Only On Pings
