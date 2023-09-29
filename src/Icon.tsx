@@ -4,8 +4,8 @@ import { cfg, toggleDisabledIndicator } from ".";
 
 export const Icon = (f: React.JSX.Element[]): React.JSX.Element | null => {
   if (f.some((element) => element.key == "silent")) return null;
-  const silent = cfg.get("silent", true);
-  const buttonEnabled = cfg.get("buttonEnabled", true);
+  const silent = cfg.get("silent");
+  const buttonEnabled = cfg.get("buttonEnabled");
 
   return (
     <div
