@@ -2,8 +2,9 @@ import { components } from "replugged";
 
 import { cfg, toggleDisabledIndicator } from ".";
 
-export const Icon = (f: React.JSX.Element[]): React.JSX.Element | null => {
-  if (f.some((element) => element.key == "silent")) return null;
+export const Icon = ({ type }: { type?: { analyticsName?: string } }): React.JSX.Element | null => {
+  if (["sidebar","normal"].every((val) => val !== type?.analyticsName)) return null;
+
   const silent = cfg.get("silent");
   const buttonEnabled = cfg.get("buttonEnabled");
 
