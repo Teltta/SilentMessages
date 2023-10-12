@@ -7,7 +7,7 @@
     "discordID": "365145249074642956",
     "github": "Teltta"
   },
-  "version": "1.1.0",
+  "version": "1.1.1",
   "updater": {
     "type": "store",
     "id": "dev.Teltta.SilentMessages"

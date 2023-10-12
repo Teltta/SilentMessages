@@ -1,5 +1,6 @@
-import { Injector, common, settings } from "replugged";
+import { Injector, common, settings, webpack } from "replugged";
 import "./style.css";
+import { UploadArguments } from "./types";
 
 const injector = new Injector();
 const userPingRegex = /<@([0-9]{18,19})>/;
@@ -27,8 +28,9 @@ export const cfg = await settings.init<SettingsType>("dev.Teltta.SilentMessages"
   onlyOnPings: true,
 });
 
-export function start(): void {
+export async function start(): Promise<void> {
   injectMessageContent();
+  await injectSendAttachments();
 }
 
 export function toggleDisabledIndicator(visible: boolean): void {
@@ -41,26 +43,33 @@ export function toggleDisabledIndicator(visible: boolean): void {
 }
 
 function autoDisable(): void {
-  if (cfg.get("autoToggle", false)) {
+  if (cfg.get("autoToggle") && cfg.get("silent")) {
     cfg.set("silent", false);
-    toggleDisabledIndicator(false);
+    toggleDisabledIndicator(true);
   }
 }
 
 function injectMessageContent(): void {
   injector.before(common.messages, "sendMessage", (args) => {
-    const silent = cfg.get("silent", false);
-    if (!cfg.get("autoToggleOnlyOnPing", true)) {
+    const silent = cfg.get("silent");
+    if (!cfg.get("autoToggleOnlyOnPing")) {
+      autoDisable();
+    } else if (
+      args[1].content.search(userPingRegex) !== -1 ||
+      (args[3]?.messageReference instanceof Object &&
+        args[3]?.allowedMentions?.replied_user !== false)
+    ) {
       autoDisable();
     }
+
     if (cfg.get("onlyOnPings")) {
       if (
+        !args[1].content.startsWith("@silent ") &&
         silent &&
         ((args[3]?.messageReference instanceof Object &&
           args[3]?.allowedMentions?.replied_user !== false) ||
           args[1].content.search(userPingRegex) !== -1)
       ) {
-        autoDisable();
         args[1].content = `@silent ${args[1].content}`;
       }
       return args;
@@ -69,17 +78,61 @@ function injectMessageContent(): void {
     if (
       args[1].content.startsWith("@silent ") ||
       !silent ||
-      (cfg.get("ignorePings", false) && args[1].content.search(userPingRegex) !== -1) ||
-      (cfg.get("ignoreReplyPings", false) &&
+      (cfg.get("ignorePings") && args[1].content.search(userPingRegex) !== -1) ||
+      (cfg.get("ignoreReplyPings") &&
         args[3]?.messageReference instanceof Object &&
         args[3]?.allowedMentions?.replied_user !== false)
     ) {
       return args;
     }
 
-    autoDisable();
-
     args[1].content = `@silent ${args[1].content}`;
+    return args;
+  });
+}
+
+async function injectSendAttachments(): Promise<void> {
+  const attachmentStore = await webpack.waitForModule<{
+    uploadFiles: (args: UploadArguments) => void;
+  }>(webpack.filters.byProps("uploadFiles"));
+
+  injector.before(attachmentStore, "uploadFiles", (args) => {
+    const silent = cfg.get("silent");
+    if (!cfg.get("autoToggleOnlyOnPing")) {
+      autoDisable();
+    } else if (
+      args[0].parsedMessage.content.search(userPingRegex) !== -1 ||
+      (args[0].options?.messageReference instanceof Object &&
+        args[0].options?.allowedMentions?.replied_user !== false)
+    ) {
+      autoDisable();
+    }
+
+    if (cfg.get("onlyOnPings")) {
+      if (
+        !args[0].parsedMessage.content.startsWith("@silent ") &&
+        silent &&
+        ((args[0].options?.messageReference instanceof Object &&
+          args[0].options?.allowedMentions?.replied_user !== false) ||
+          args[0].parsedMessage.content.search(userPingRegex) !== -1)
+      ) {
+        args[0].parsedMessage.content = `@silent ${args[0].parsedMessage.content}`;
+      }
+      return args;
+    }
+
+    if (
+      args[0].parsedMessage.content.startsWith("@silent ") ||
+      !silent ||
+      (cfg.get("ignorePings") && args[0].parsedMessage.content.search(userPingRegex) !== -1) ||
+      (cfg.get("ignoreReplyPings") &&
+        args[0].options?.messageReference instanceof Object &&
+        args[0].options?.allowedMentions?.replied_user !== false)
+    ) {
+      return args;
+    }
+
+    args[0].parsedMessage.content = `@silent ${args[0].parsedMessage.content}`;
     return args;
   });
 }

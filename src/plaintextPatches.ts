@@ -7,7 +7,7 @@ const patches: types.PlaintextPatch[] = [
       {
         match: /(.)\.push.{1,}\(.{1,3},\{.{1,30}\},"gift"\)\)/,
         replace:
-          "$&;try{$1.push(window.replugged.plugins.getExports('dev.Teltta.SilentMessages')?.Icon($1)??null)}catch{}",
+          "$&;try{$1.push(window.replugged.plugins.getExports('dev.Teltta.SilentMessages')?.Icon(arguments[0])??null)}catch{}",
       },
     ],
   },

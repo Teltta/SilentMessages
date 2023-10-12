@@ -6,3 +6,6 @@ Adds button to the chatbar to toggle silent messages
 
 ## Preview
 <img src="./assets/DiscordCanary_qiUHIGwg5p.gif">
+
+## Credits
+Some code by [12944qwerty](https://github.com/qwerty-mods "qwerty-mods").
