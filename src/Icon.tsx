@@ -1,25 +1,27 @@
-import { components } from "replugged";
-
+import { common, components } from "replugged";
 import { cfg, toggleDisabledIndicator } from ".";
 
-export const Icon = ({ type }: { type?: { analyticsName?: string } }): React.JSX.Element | null => {
-  if (["sidebar", "normal"].every((val) => val !== type?.analyticsName)) return null;
+const { React } = common;
 
-  const silent = cfg.get("silent");
-  const buttonEnabled = cfg.get("buttonEnabled");
+export const Icon = ({ type }: { type?: { analyticsName?: string } }): React.JSX.Element | null => {
+  let [silent, setSilent] = React.useState(cfg.get("silent", true));
+
+  if (
+    ["sidebar", "normal"].every((val) => val !== type?.analyticsName) ||
+    !cfg.get("buttonEnabled")
+  ) {
+    return null;
+  }
 
   return (
-    <div
-      key="silent"
-      className={`silentmessages-button-main ${
-        buttonEnabled ? "silentmessages-button-enabled" : "silentmessages-button-disabled"
-      }`}>
-      <components.Tooltip text="Toggle Silent Messages">
+    <div key={`silent ${silent ? "enabled" : "disabled"}`}>
+      <components.Tooltip text={`${silent ? "Disable" : "Enable"} Silent Messages`}>
         <components.Clickable
           style={{ marginTop: 5 }}
           onClick={() => {
-            toggleDisabledIndicator(cfg.get("silent"));
-            cfg.set("silent", !cfg.get("silent"));
+            toggleDisabledIndicator(silent);
+            cfg.set("silent", !silent);
+            setSilent(!silent);
           }}>
           <button className="silentmessages-button">
             <svg width="24" height="24" viewBox="0 0 24 24">

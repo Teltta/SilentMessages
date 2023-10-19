@@ -1,6 +1,6 @@
 {
   "name": "silent-messages",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Silent Messages",
   "engines": {
     "node": ">=18.0.0",

@@ -1,9 +1,9 @@
-.silentmessages-button svg {
+.silentmessages-button > svg {
   margin-top: 5px;
   color: var(--interactive-normal);
 }
 
-.silentmessages-button:hover svg {
+.silentmessages-button:hover > svg {
   color: var(--interactive-hover);
 }
 
@@ -11,12 +11,11 @@
   background: transparent;
 }
 
-.silentmessages-button-disabled,
 .silent-disabled {
   display: none;
 }
 
-.silentmessages-button .disabled-indicator {
+.silentmessages-button > svg > .disabled-indicator {
   position: absolute;
   transform: translateX(-15px) translateY(22px) rotate(-45deg);
 }
